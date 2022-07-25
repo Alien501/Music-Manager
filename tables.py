@@ -1,5 +1,34 @@
 # Module to maintain database connection and table
+from importlib.resources import path
 import mysql.connector as sql
+
+# Function for lyrics
+def dis_lyrics(song_name):
+    q = f'SELECT SONG_NAME, LYRICS, PATH FROM MUSICDATA WHERE SONG_NAME LIKE \'%{song_name}%\''
+    cursor_obj.execute(q)
+    final_data = cursor_obj.fetchall()
+    if cursor_obj.rowcount > 0:
+        print('Records Found:')
+
+        i = 0
+        while i < len(final_data):
+            print(i+1,':',final_data[i][0])
+            i += 1
+        while True:
+            try:
+                req = int(input("Enter your choice: "))
+                if req not in range(1, len(final_data)+1):
+                    print('Invalid Input. . .')
+                    continue
+                else:
+                    break
+            except:
+                print("Invalid Input. . .")
+                continue
+        return final_data[req-1]
+    else:
+        print(f'{song_name} not found in database. . .')
+
 
 #Function for admin commands
 def query(q):
@@ -26,7 +55,7 @@ def db_search(item_queried, type):
         4 : "AL_ARTIST",
         5 : "YEAR"
     }
-    query = "SELECT * FROM MUSICDATA WHERE {} LIKE \'%{}%\'".format(d_dict[type], item_queried)
+    query = f"SELECT * FROM MUSICDATA WHERE {d_dict[type]} LIKE \'%{item_queried}%\'"
     cursor_obj.execute(query)
     fetched = cursor_obj.fetchall()
     if cursor_obj.rowcount == 0:
@@ -34,7 +63,7 @@ def db_search(item_queried, type):
     else:
         i = 0
         while i<len(fetched):
-            print("--> "*10,"Name: {}".format(fetched[i][0].strip()), "Album: {}".format(fetched[i][1].strip()), "Path: {}".format(fetched[i][-2].strip()),sep='\n')
+            print("--> "*10,f"Name: {fetched[i][0].strip()}", f"Album: {fetched[i][1].strip()}", f"Path: {fetched[i][-2].strip()}",sep='\n')
             i+=1
         print('--> '*10)
         
@@ -52,6 +81,12 @@ def db_search(item_queried, type):
                 if len(p_title) == 0:
                     print("Enter a valid title. . .")
                 else:
+                    while True:
+                        ply_path = input("Enter directory to create playlist: ").strip()
+                        if len(ply_path) == 0 or '\\' not in ply_path:
+                            print("Enter a valid path. . .")
+                            continue
+                        break
                     break
             while True:
                 cover = input("Do you wish to keep a cover image[Y/N]: ").strip().lower()
@@ -69,21 +104,21 @@ def db_search(item_queried, type):
                                 break
                     break
             
-            with open(p_title+'.m3u', 'w') as f:
+            with open(ply_path+'\\'+p_title+'.m3u', 'w') as f:
                 f.write("#EXTM3U\n")
                 if cover == 'y':
-                    f.write("#EXTIMG: front cover\n{}\n".format(cover_loc))
+                    f.write(f"#EXTIMG: front cover\n{cover_loc}\n")
                 for file in fetched:
-                    f.write("#EXTINF: {0}, {1}\n{2}\n".format(file[-1], file[2]+' - '+file[0], file[-2]))
+                    f.write(f"#EXTINF: {file[-1]}, {file[2]+' - '+file[0]}\n{file[-2]}\n")
             print("created...")
                 
             
 #Function to check presence of data
 def check_data(file, file_type, path, album):
     if file_type == "L":
-        q = "select l_name from lrcdata where l_name = \'{}\' and l_path = \'{}\'".format(file, path)
+        q = f"select l_name from lrcdata where l_name = \'{file}\' and l_path = \'{path}\'"
     else:
-        q = "select song_name from musicdata where song_name = \'{}\' and s_album = \'{}\'".format(file, album)
+        q = f"select song_name from musicdata where song_name = \'{file}\' and s_album = \'{album}\'"
     cursor_obj.execute(q)
     cursor_obj.fetchall()
     return cursor_obj.rowcount
@@ -92,11 +127,11 @@ def check_data(file, file_type, path, album):
 def lrc_database(lrc_name, path):
     if check_data(lrc_name, "L", path, "None") == 0:
         try:
-            lrc_query = "INSERT INTO LRCDATA VALUES('{0}', '{1}')".format(lrc_name, path)
+            lrc_query = f"INSERT INTO LRCDATA VALUES('{lrc_name}', '{path}')"
             cursor_obj.execute(lrc_query)
             conn.commit()
         except:
-            print("Skipped: {}".format(path))
+            print(f"Skipped: {path}")
             print("Query:",lrc_query)
     else:
         pass
@@ -106,16 +141,16 @@ def lrc_database(lrc_name, path):
 def music_database(song_name, song_album, song_artist, al_artist, bit_rate, lrc_stat, lyrics, year, path, dur):
     if check_data(song_name, 'M', path, song_album) == 0:
         try:
-            song_query = "INSERT INTO MUSICDATA VALUES('{0}', '{1}', '{2}','{3}','{4}', '{5}', '{6}', '{7}', '{8}',{9})".format(song_name, song_album, song_artist, al_artist, bit_rate, lrc_stat, lyrics, year, path, dur)
+            song_query = f"INSERT INTO MUSICDATA VALUES('{song_name}', '{song_album}', '{song_artist}','{al_artist}','{bit_rate}', '{lrc_stat}', '{lyrics}', '{year}', '{path}',{dur})"
             cursor_obj.execute(song_query)
             conn.commit()
         except:
             print('Skipped: {}'.format(path))
             print('Query:',song_query)
     else:
-        # song_query = "UPDATE MUSICDATA SET LRC_STAT =  \'{0}\',LYRICS= \'{1}\' WHERE SONG_NAME = \'{2}\'".format(lrc_stat, lyrics, song_name)
-        # cursor_obj.execute(song_query)
-        # conn.commit()
+        song_query = f"UPDATE MUSICDATA SET LRC_STAT =  \'{lrc_stat}\',LYRICS= \'{lyrics}\',PATH =\'{path}\' WHERE SONG_NAME = \'{song_name}\'"
+        cursor_obj.execute(song_query)
+        conn.commit()
         pass
 
 #Main Function
@@ -153,8 +188,11 @@ def conn_main():
 
 #Function to close connection with database
 def close():
-    conn.commit()
-    cursor_obj.close()
-    conn.close()
+    try:
+        conn.commit()                   # Database connection may not be closed properly
+        cursor_obj.close()
+        conn.close()
+    except:
+        pass
 
 # P R O G R A M     E N D S #

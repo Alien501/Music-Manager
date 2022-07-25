@@ -49,10 +49,17 @@ def music_data(path,sibilings, file):
     else:
         s_lrc = "NA"
     
-    if len(s_tag.extra)>0:
-        s_lyrics = "A"
-    else:
-        s_lyrics = "NA"
+    # if len(s_tag.extra)>0:
+    #     s_lyrics = "A"
+    # else:
+    #     s_lyrics = "NA"
+    try:
+        if len(s_tag.extra['lyrics'].strip()) > 0:
+            s_lyrics = "A"
+        else:
+            s_lyrics = 'NA'
+    except KeyError:
+        s_lyrics = 'NA'
     
     if s_tag.year == None:
         s_year = "NA"
@@ -93,7 +100,7 @@ def main():
         print("Invalid directory...")
         return None
     print("Please wait a while. . .")
-    print("Working with databse. . .")
+    print("Working with database. . .")
     print("Output: ")
     for i in walked_data:
         walking_path = i[0]

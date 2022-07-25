@@ -1,33 +1,35 @@
-# Code to shift spotify playlist with offline songs
+import tables
+from tinytag import TinyTag as tt
 
-def keyPlay():
-    while True:
-        playlist = input("Enter playlist path: ").strip()
-        if len(playlist) == 0 or playlist[-4:].lower() != '.m3u':
-            print('! Not a valid Playlist path !')
-            print('Enter 1 to goto Main Menu')
-            continue
-        elif playlist == '1':
-            return
-        else:
-            break
+# Function to retrive lyrics from songs Metadata
 
+def lyrics():
     while True:
-        old_text = input('Enter text to be replaced: ').strip()
-        if len(old_text) == 0:
-            print('Enter a valid text. . .')
+        s_name = input('Enter song name: ').strip()
+        if len(s_name) == 0:
+            print("Enter a valid name. . .")
             continue
         else:
-            while True:
-                new_text = input('Enter text to replace: ').strip()
-                if len(new_text) == 0:
-                    print('Enter a valid text. . .')
-                    continue
-                else:
-                    break
             break
-    
+    op = tables.dis_lyrics(s_name)
 
-
-
-keyPlay() 
+    if op != None:
+        print(' - '*30)
+        if op[1] == 'A':
+            tag = tt.get(op[2])
+            for i in tag.extra['lyrics'].split('\n'):
+                print(i.strip())
+        else:
+            print("Lyrics not found. . .")
+        print(' - '*30)
+        
+    while True:
+        cont = input("[Y/N] Continue: ").strip().lower()
+        if cont not in ['y', 'n']:
+            print("Wrong input...")
+            continue
+        break
+    if cont == 'y':
+        lyrics()
+    else:
+        return

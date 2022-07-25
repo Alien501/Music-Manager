@@ -98,7 +98,7 @@ def main():
                 except:
                     pass
     
-    a = input("Enter any key to continue: ")
+    # a = input("Enter any key to continue: ")
         
     print("Arranging lrc. . .")
     if len(s_dict)>0:
@@ -110,9 +110,9 @@ def main():
     else:
         print('No LRC Found...')
 
-    try:
-        os.close(master_dir)
-    except:
-        print('Skipped')
+    # try:
+    #     os.close(master_dir)
+    # except:
+    #     print('Skipped')
         
     print("All set...")

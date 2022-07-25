@@ -1,6 +1,7 @@
 import music_database_add as md
 import tables as dbm
 import arrange as arrange
+import other_features as ot
 
 
 #function to deal with search
@@ -36,7 +37,7 @@ def search():
     
     if search_choice in range(1,6):
         while True:
-            search_query = input("Enter {} You are looking for: ".format(search_options[search_choice])).strip()
+            search_query = input(f"Enter {search_options[search_choice]} You are looking for: ").strip()
             if len(search_query) == 0:                                         #Checks whether empty space is input
                 print("Invalid Input..., Try again...")
                 continue
@@ -90,7 +91,8 @@ def menu():
         1: "Update Music Database",
         2: "Search Database",
         3: "Arrange Music Folder",
-        4: "Quit"       #Last option will be always quit
+        4: "Display Lyrics",
+        5: "Quit"       #Last option will be always quit
         }        #List to keep track of features
     
     print("~-"*30)
@@ -101,7 +103,7 @@ def menu():
     while True:
         try:
             user_input = int(input("Enter no. of option you wish to perform: "))
-            if user_input not in [1, 2, 3, 4]:              #Can be replaced with range()
+            if user_input not in [1, 2, 3, 4, 5]:              #Can be replaced with range()
                 print("Wrong Input, Only input No. within range...")
                 continue
             else:
@@ -112,19 +114,22 @@ def menu():
     
     if user_input == 1:
         md.key()
-        menu()
     elif user_input == 2:
         search()
-        menu()
     elif user_input == 3:
-        print("/ # \\"*10)
-        print("NOTE:")
-        print('1. For now it cant move flac files.')
-        print("/ # \\"*10)
+        # print("/ # \\"*10)            #FIXED
+        # print("NOTE:")
+        # print('1. For now it cant move flac files.')
+        # print("/ # \\"*10)
         arrange.main()
-        menu()
+    elif user_input == 4:
+        dbm.conn_main()
+        print("X ! . Song should be in database . ! X")
+        ot.lyrics()
+        dbm.close()
     else:
         print("- Coded By Alien 👽 -")
         return None
+    menu()
 
 menu()    
