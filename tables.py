@@ -63,12 +63,12 @@ def db_search(item_queried, type):
     else:
         i = 0
         while i<len(fetched):
-            print("--> "*10,f"Name: {fetched[i][0].strip()}", f"Album: {fetched[i][1].strip()}", f"Path: {fetched[i][-2].strip()}",sep='\n')
+            print("--> "*10,f"Name  : {fetched[i][0]}", f"Album : {fetched[i][1]}", f"Path  : {fetched[i][-2]}",sep='\n')
             i+=1
         print('--> '*10)
         
         while True:
-            playlist = input("Do you wish to export them as playlist[Y/N]: ").strip().lower()
+            playlist = input("Export as Playlist [Y/N]: ").strip().lower()
             if playlist not in ("y","n"):
                 print("Invalid input. . . ")
                 continue
@@ -138,10 +138,10 @@ def lrc_database(lrc_name, path):
 
 
 # Function to maintain database related to music data
-def music_database(song_name, song_album, song_artist, al_artist, bit_rate, lrc_stat, lyrics, year, path, dur):
+def music_database(song_name, song_album, song_artist, al_artist, bit_rate, lrc_stat, lyrics, year, path, dur, type):
     if check_data(song_name, 'M', path, song_album) == 0:
         try:
-            song_query = f"INSERT INTO MUSICDATA VALUES('{song_name}', '{song_album}', '{song_artist}','{al_artist}','{bit_rate}', '{lrc_stat}', '{lyrics}', '{year}', '{path}',{dur})"
+            song_query = f"INSERT INTO MUSICDATA VALUES('{song_name}', '{song_album}', '{song_artist}','{al_artist}','{bit_rate}', '{lrc_stat}', '{lyrics}', '{year}', '{path}',{dur}, '{type}')"
             cursor_obj.execute(song_query)
             conn.commit()
         except:
@@ -157,7 +157,7 @@ def music_database(song_name, song_album, song_artist, al_artist, bit_rate, lrc_
 def conn_main():
     global conn, cursor_obj
     
-    conn = sql.connect(host = "localhost", user ="root", passwd ="Alien@420")        #default password is root
+    conn = sql.connect(host = "localhost", user ="root", passwd ="root")        #default password is root
     cursor_obj = conn.cursor()
     print("-"*30)
     try:
@@ -170,7 +170,7 @@ def conn_main():
     print("SELECTED DATABASE ✔")
     
     try:
-        cursor_obj.execute("CREATE TABLE MUSICDATA(SONG_NAME TEXT, S_ALBUM TEXT, S_ARTISTS TEXT, AL_ARTIST TEXT, B_RATE TEXT,LRC_STAT VARCHAR(10), LYRICS VARCHAR(10), YEAR VARCHAR(10), PATH TEXT, Duration INT)")
+        cursor_obj.execute("CREATE TABLE MUSICDATA(SONG_NAME TEXT, S_ALBUM TEXT, S_ARTISTS TEXT, AL_ARTIST TEXT, B_RATE TEXT,LRC_STAT VARCHAR(10), LYRICS VARCHAR(10), YEAR VARCHAR(10), PATH TEXT, Duration INT, TYPE VARCHAR(50))")
         print("TABLE-1 ✔")
         conn.commit()
     except:
