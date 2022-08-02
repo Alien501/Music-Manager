@@ -1,5 +1,6 @@
 # importing required modules
 import os
+
 try:
     from tinytag import TinyTag as TT
 except:
@@ -34,7 +35,11 @@ def check_lrc(path,file):
 #Function to process music's meta-data
 def music_data(path,sibilings, file):
     s_path = path+'\\'+file
-    s_tag = TT.get(s_path)
+    try:
+        s_tag = TT.get(s_path)
+    except:
+        print(f"Skipped {file}")
+        return
     s_path = s_path.split('\\')
     s_path = escape_remover('\\\\'.join(s_path))
     s_title = escape_remover(s_tag.title)
@@ -68,7 +73,7 @@ def music_data(path,sibilings, file):
 
     if s_duration == None:
         s_duration = 000
-    db.music_database(s_title, s_album, s_artist, s_alart,s_bitrate, s_lrc, s_lyrics, s_year, s_path, s_duration)
+    db.music_database(s_title, s_album, s_artist, s_alart,s_bitrate, s_lrc, s_lyrics, s_year, s_path, s_duration, file[-4:])
 
 #Function to determine file or folder
 # {1: Music File, 2: Unwanted, 3: Lrc, 4: Folder}
