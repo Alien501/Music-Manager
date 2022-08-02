@@ -1,3 +1,4 @@
+from time import sleep
 import music_database_add as md
 import tables as dbm
 import arrange as arrange
@@ -24,14 +25,14 @@ def search():
     print("-_"*30)
     while True:
         try:
-            search_choice = int(input("Enter no. of option you wish to perform: "))
+            search_choice = int(input("Option: "))
             if search_choice not in [1, 2, 3, 4, 5, 6, 7]:         #Can be replaced with range()
-                print("Wrong Input, Only input No. within range...")
+                print("Invalid input !")
                 continue
             else:
                 break
         except:
-            print("Only enter numeric character within given range...")
+            print("Invalid input !")
             continue
     print("-_"*30)
     
@@ -92,7 +93,8 @@ def menu():
         2: "Search Database",
         3: "Arrange Music Folder",
         4: "Display Lyrics",
-        5: "Quit"       #Last option will be always quit
+        5: "Transfer Playlist",
+        6: "Quit"       #Last option will be always quit
         }        #List to keep track of features
     
     print("~-"*30)
@@ -102,14 +104,14 @@ def menu():
     
     while True:
         try:
-            user_input = int(input("Enter no. of option you wish to perform: "))
-            if user_input not in [1, 2, 3, 4, 5]:              #Can be replaced with range()
-                print("Wrong Input, Only input No. within range...")
+            user_input = int(input("Option: "))
+            if user_input not in range(1,7):              #Can be replaced with range()
+                print("Invalid input !")
                 continue
             else:
                 break
         except:
-            print("Only enter numeric character within given range...")
+            print("Invalid Input !")
             continue
     
     if user_input == 1:
@@ -117,16 +119,27 @@ def menu():
     elif user_input == 2:
         search()
     elif user_input == 3:
-        # print("/ # \\"*10)            #FIXED
-        # print("NOTE:")
-        # print('1. For now it cant move flac files.')
-        # print("/ # \\"*10)
+        print("/ # \\"*10)
+        print("NOTE:")
+        print('1. It is advised to keep a backup.')
+        print("/ # \\"*10)
+        sleep(1.5)
         arrange.main()
     elif user_input == 4:
         dbm.conn_main()
         print("X ! . Song should be in database . ! X")
+        sleep(3)
         ot.lyrics()
         dbm.close()
+    elif user_input == 5:
+        print("/ # \\"*10)
+        print("NOTE:")
+        print('1. The input\'s are case sensitive',
+        '2. The path in both systems system should be more or less similar',
+        sep='\n')
+        print("/ # \\"*10)
+        sleep(1.5)
+        ot.port_play()
     else:
         print("- Coded By Alien 👽 -")
         return None
