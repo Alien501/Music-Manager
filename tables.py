@@ -63,7 +63,7 @@ def db_search(item_queried, type):
     else:
         i = 0
         while i<len(fetched):
-            print("--> "*10,f"Name  : {fetched[i][0]}", f"Album : {fetched[i][1]}", f"Path  : {fetched[i][-2]}",sep='\n')
+            print("--> "*10,f"Name  : {fetched[i][0]}", f"Album : {fetched[i][1]}", f"Path  : {fetched[i][-3]}",sep='\n')
             i+=1
         print('--> '*10)
         
@@ -157,7 +157,7 @@ def music_database(song_name, song_album, song_artist, al_artist, bit_rate, lrc_
 def conn_main():
     global conn, cursor_obj
     
-    conn = sql.connect(host = "localhost", user ="root", passwd ="root")        #default password is root
+    conn = sql.connect(host = "localhost", user ="root", passwd ="Alien@420")        #default password is root
     cursor_obj = conn.cursor()
     print("-"*30)
     try:

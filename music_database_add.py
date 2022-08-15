@@ -49,7 +49,7 @@ def music_data(path,sibilings, file):
     s_bitrate = s_tag.bitrate
     s_duration = int(s_tag.duration)
     
-    if file[:-4]+'.lrc' in sibilings or file[-5:] in sibilings:
+    if file[:-4]+'.lrc' in sibilings or file[:-5]+'.lrc' in sibilings:
         s_lrc = "A"
     else:
         s_lrc = "NA"
